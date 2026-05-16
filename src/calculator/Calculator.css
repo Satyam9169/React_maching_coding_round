@@ -1,0 +1,32 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body{
+    background-color: rgba(118, 34, 197, 0.822);
+}
+
+.calc{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin: auto;
+    padding: 100px;
+}
+
+.text input{
+    padding: 5px 17px;
+    border-radius: 10%;
+}
+
+.calc input{
+    padding: px;
+}
+
+.text1{
+    margin-top: 10px;
+}

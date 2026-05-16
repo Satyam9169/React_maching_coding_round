@@ -1,0 +1,64 @@
+.TodoForm {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.Todo,
+.formInline {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    cursor: pointer;
+    width: 32%;
+    margin: auto;
+    background-color: white;
+    color: black;
+    padding: 10px;
+    font-size: 20px;
+}
+
+.completed {
+    color: #c5aeff;
+    text-decoration: line-through;
+    cursor: pointer;
+}
+
+.Todo,
+p {
+    margin-top: 15px;
+}
+
+input[type=text] {
+    width: 100%;
+    padding: 6px 100px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    /* box-sizing: border-box; */
+}
+
+button[type=submit] {
+    width: 100%;
+    background-color: #522bdf;
+    color: white;
+    padding: 3px 5px;
+    margin: 8px 0;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.formInline {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    /* create a shdow */
+    /* background-color: white;
+    color: white;
+    padding: 10px;
+    font-size: 40px; */
+}
