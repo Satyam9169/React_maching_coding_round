@@ -1,0 +1,17 @@
+export const users = [
+    "Satyam",
+    "Rahul",
+    "Aman",
+    "Vikas",
+    "Rohit",
+    "Ankit",
+    "Priya",
+    "Neha",
+    "Pooja",
+    "Karan",
+    "Ajay",
+    "Simran",
+    "Mohit",
+    "Aditi",
+    "Nikhil",
+  ];
