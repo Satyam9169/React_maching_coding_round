@@ -4,6 +4,7 @@
 // import MainTodo from "./todoApp/MainTodo";
 // import Todo from "./todoApp/Todo";
 import Pagination from "./Pagination/Pagination";
+import TodoApp from "./todoApp/TodoApp";
 
 const App = () => {
   return (
@@ -13,6 +14,7 @@ const App = () => {
       <DisplayData /> */}
       {/* <MainTodo /> */}
       {/* <Todo /> */}
+      <TodoApp />
     </div>
   );
 }
