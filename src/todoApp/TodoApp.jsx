@@ -1,102 +1,183 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+
+const STORAGE_KEY = "todo-tasks";
+const FILTER_OPTIONS = {
+  ALL: "All",
+  PENDING: "Pending",
+  COMPLETED: "Completed",
+};
 
 const TodoApp = () => {
+  // Initialize tasks from localStorage
   const [tasks, setTasks] = useState(() => {
-    const saved = localStorage.getItem("todo-tasks");
-    if (saved) return JSON.parse(saved);
-    return [];
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      return saved ? JSON.parse(saved) : [];
+    } catch (error) {
+      console.error("Failed to load tasks from localStorage:", error);
+      return [];
+    }
   });
 
   const [inputValue, setInputValue] = useState("");
-  const [filter, setFilter] = useState("ALL");
-  const [edit, setEdit] = useState(null);
+  const [filter, setFilter] = useState(FILTER_OPTIONS.ALL);
+  const [editingId, setEditingId] = useState(null);
 
+  // Persist tasks to localStorage whenever they change
   useEffect(() => {
-    localStorage.setItem("todo-tasks", JSON.stringify(tasks));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+    } catch (error) {
+      console.error("Failed to save tasks to localStorage:", error);
+    }
   }, [tasks]);
 
-  const handleAddorEdit = (e) => {
-    e.preventDefault();
+  // Memoized filtered tasks to avoid unnecessary recalculations
+  const filteredTasks = useMemo(() => {
+    return tasks.filter((task) => {
+      if (filter === FILTER_OPTIONS.COMPLETED) return task.completed;
+      if (filter === FILTER_OPTIONS.PENDING) return !task.completed;
+      return true; // All
+    });
+  }, [tasks, filter]);
 
-    if (!inputValue.trim()) return;
-    if (edit !== null) {
-      setTasks(
-        tasks.map((t) => (t.id === edit ? { ...t, text: inputValue } : t)),
-      );
-      setEdit(null);
-    } else {
-      const newTask = {
-        id: crypto.randomUUID(),
-        text: inputValue,
-        completed: false,
-      };
-      setTasks([...tasks, newTask]);
-    }
-    setInputValue("");
-  };
+  // Handle adding or editing a task
+  const handleAddOrEdit = useCallback(
+    (e) => {
+      e.preventDefault();
 
-  const handleChange = (e) => {
+      if (!inputValue.trim()) return;
+
+      if (editingId !== null) {
+        // Update existing task
+        setTasks((prevTasks) =>
+          prevTasks.map((task) =>
+            task.id === editingId ? { ...task, text: inputValue } : task
+          )
+        );
+        setEditingId(null);
+      } else {
+        // Add new task
+        const newTask = {
+          id: crypto.randomUUID(),
+          text: inputValue,
+          completed: false,
+        };
+        setTasks((prevTasks) => [...prevTasks, newTask]);
+      }
+
+      setInputValue("");
+    },
+    [inputValue, editingId]
+  );
+
+  // Handle input change
+  const handleInputChange = useCallback((e) => {
     setInputValue(e.target.value);
-  };
+  }, []);
 
-  const handleDelete = (id) => {
-    setTasks(tasks.filter((t) => t.id !== id));
-  };
+  // Handle task deletion
+  const handleDelete = useCallback((id) => {
+    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+  }, []);
 
-  const handleToggle = (id) => {
-    setTasks(
-      tasks.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t)),
+  // Handle task completion toggle
+  const handleToggle = useCallback((id) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === id ? { ...task, completed: !task.completed } : task
+      )
     );
-  };
+  }, []);
 
-  const handleEdit = (task) => {
+  // Handle task edit mode
+  const handleEditTask = useCallback((task) => {
     setInputValue(task.text);
-    setEdit(task.id);
-  };
+    setEditingId(task.id);
+  }, []);
 
-  const filteredTask = tasks.filter((t) => {
-    if (filter === "Completed") return t.completed;
-    if (filter === "Pending") return !t.completed;
-    return true; // All
-  });
+  // Handle filter change
+  const handleFilterChange = useCallback((filterOption) => {
+    setFilter(filterOption);
+  }, []);
+
+  const isEditing = editingId !== null;
+  const buttonText = isEditing ? "Update" : "Add";
 
   return (
-    <div>
-      <br />
+    <div className="todo-container">
       <h1>TODO App Using Local Storage</h1>
-      <form onSubmit={handleAddorEdit}>
+
+      {/* Input Form */}
+      <form onSubmit={handleAddOrEdit} className="todo-form">
         <input
           type="text"
           value={inputValue}
-          onChange={handleChange}
-          placeholder="Enter your task.."
+          onChange={handleInputChange}
+          placeholder="Enter your task..."
+          className="todo-input"
+          autoComplete="off"
         />
-        <button type="submit">{edit !== null ? "Update" : "Add"}</button>
+        <button type="submit" className="todo-button">
+          {buttonText}
+        </button>
       </form>
 
-      {/* filter controls */}
-      <div className="filters">
-        {["All", "Pending", "Completed"].map((t) => (
+      {/* Filter Controls */}
+      <div className="filter-controls">
+        {Object.values(FILTER_OPTIONS).map((filterOption) => (
           <button
-            onClick={() => setFilter(t)}
-            style={{ fontWeight: filter === t ? "bold" : "normal" }}>
-            {t}
+            key={filterOption}
+            onClick={() => handleFilterChange(filterOption)}
+            className={`filter-button ${
+              filter === filterOption ? "active" : ""
+            }`}
+            aria-pressed={filter === filterOption}>
+            {filterOption}
           </button>
         ))}
-        <ul>
-          {filteredTask.map((task) => (
-            <li key={task.id}>
-              <input
-                type="checkbox"
-                checked={task.completed}
-                onChange={() => handleToggle(task.id)}
-              />
-              <span>{task.text}</span>
-              <button onClick={() => handleEdit(task)}>Edit</button>
-              <button onClick={() => handleDelete(task.id)}>Delete</button>
-            </li>
-          ))}
-        </ul>
+      </div>
+
+      {/* Task List */}
+      <div className="tasks-container">
+        {filteredTasks.length === 0 ? (
+          <p className="empty-message">
+            No tasks found. {filter !== FILTER_OPTIONS.ALL ? "Try a different filter." : "Create one to get started!"}
+          </p>
+        ) : (
+          <ul className="task-list">
+            {filteredTasks.map((task) => (
+              <li key={task.id} className="task-item">
+                <input
+                  type="checkbox"
+                  checked={task.completed}
+                  onChange={() => handleToggle(task.id)}
+                  className="task-checkbox"
+                  aria-label={`Mark "${task.text}" as ${
+                    task.completed ? "incomplete" : "complete"
+                  }`}
+                />
+                <span className={`task-text ${task.completed ? "completed" : ""}`}>
+                  {task.text}
+                </span>
+                <div className="task-actions">
+                  <button
+                    onClick={() => handleEditTask(task)}
+                    className="edit-button"
+                    aria-label={`Edit task: ${task.text}`}>
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDelete(task.id)}
+                    className="delete-button"
+                    aria-label={`Delete task: ${task.text}`}>
+                    Delete
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   );
