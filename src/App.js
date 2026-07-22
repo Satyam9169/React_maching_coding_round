@@ -5,6 +5,8 @@
 // import Todo from "./todoApp/Todo";
 import Pagination from "./Pagination/Pagination";
 import TodoApp from "./todoApp/TodoApp";
+import DigitalClock from './dititalClock/TimeClock'
+import FilterHighlightText from "./FiltlerData/FilterHighlightText";
 
 const App = () => {
   return (
@@ -14,7 +16,9 @@ const App = () => {
       <DisplayData /> */}
       {/* <MainTodo /> */}
       {/* <Todo /> */}
-      <TodoApp />
+      {/* <TodoApp />
+      <DigitalClock /> */}
+      <FilterHighlightText />
     </div>
   );
 }

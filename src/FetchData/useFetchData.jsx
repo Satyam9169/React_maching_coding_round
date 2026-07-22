@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 
 const useFetchData = (API) => {
     const [user, setUser] = useState([]);
@@ -10,25 +10,25 @@ const useFetchData = (API) => {
             setLoading(true);
             setError(null)
             const response = await fetch(API);
-            if(!response.ok){
+            if (!response.ok) {
                 throw new Error(`HTTPS network ${response.status} Issue`);
             }
             const data = await response.json();
             setUser(data)
-        }catch(err){
+        } catch (err) {
             setError(err.message)
-        }finally{
+        } finally {
             setLoading(false)
         }
     }
 
-    useEffect(()=> {
-        if(API){
+    useEffect(() => {
+        if (API) {
             fetchData()
         }
     }, [API])
 
-    return {user, loading, error};
+    return { user, loading, error };
 
 }
 
