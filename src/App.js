@@ -7,11 +7,13 @@ import Pagination from "./Pagination/Pagination";
 import TodoApp from "./todoApp/TodoApp";
 import DigitalClock from './dititalClock/TimeClock'
 import FilterHighlightText from "./FiltlerData/FilterHighlightText";
+import AutoCompleteSearch from "./autocompleteSearch/AutoCompleteSearch";
 
 const App = () => {
   return (
     <div className="App">
       <Pagination />
+      <AutoCompleteSearch />
       {/* <Main />
       <DisplayData /> */}
       {/* <MainTodo /> */}
