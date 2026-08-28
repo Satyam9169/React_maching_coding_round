@@ -17,30 +17,28 @@ const FilterHighlightText = () => {
         person.toLowerCase().includes(text.toLowerCase())
     )
 
-
-
     return (
         <>
-        <input type="text" value={text} onChange={handleChange} /><br/>
-        {
-            filterText.map((person, index)=> {
-                const start = person.toLowerCase().indexOf(text.toLowerCase());
+            <input type="text" value={text} onChange={handleChange} /><br />
+            {
+                filterText.map((person, index) => {
+                    const start = person.toLowerCase().indexOf(text.toLowerCase());
 
-                if(text === "") return <p key={index}>{person}</p>
+                    if (text === "") return <p key={index}>{person}</p>
 
-                return(
-                    <p key={index}>
-                        {person.slice(0, start)}
-                        <span style={{backgroundColor:"yellow"}}>
-                            {person.slice(start, start + text.length)}
-                        </span>
-                        <span>
-                            {person.slice(start + text.length)}
-                        </span>
-                    </p>
-                )
-            })
-        }
+                    return (
+                        <p key={index}>
+                            {person.slice(0, start)}
+                            <span style={{ backgroundColor: "yellow" }}>
+                                {person.slice(start, start + text.length)}
+                            </span>
+                            <span>
+                                {person.slice(start + text.length)}
+                            </span>
+                        </p>
+                    )
+                })
+            }
         </>
     )
 

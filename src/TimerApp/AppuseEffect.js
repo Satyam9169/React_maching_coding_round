@@ -10,7 +10,7 @@ export default function App() {
         if (isRunning) {
             id = setInterval(() => {
                 setCount(p => p + 1);
-            }, 1);
+            }, 1000);
         }
         return () => clearInterval(id);
     }, [isRunning]);
