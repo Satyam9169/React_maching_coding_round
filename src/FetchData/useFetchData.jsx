@@ -1,34 +1,38 @@
 import React, { useState, useEffect } from "react";
 
 const useFetchData = (API) => {
-    const [user, setUser] = useState([]);
-    const [loading, setLoading] = useState(false);
+    const [data, setData] = useState([]);
     const [error, setError] = useState(null);
-
-    const fetchData = async () => {
-        try {
-            setLoading(true);
-            setError(null)
-            const response = await fetch(API);
-            if (!response.ok) {
-                throw new Error(`HTTPS network ${response.status} Issue`);
-            }
-            const data = await response.json();
-            setUser(data)
-        } catch (err) {
-            setError(err.message)
-        } finally {
-            setLoading(false)
-        }
-    }
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (API) {
-            fetchData()
+        let controller = new AbortController();
+        const fetchData = async () => {
+            try {
+                setLoading(true)
+                setError(null)
+                const response = await fetch(URL, {
+                    signal: controller.signal
+                });
+                if (!response.ok) throw new Error(`HTTPS ${response.status} error`)
+                const result = await response.json()
+                setData(result)
+            } catch (err) {
+                console.error(err)
+                if (err.name === "AbortError") {
+                    console.log("🛑 API REQUEST CANCELLED:", url);
+                    return;
+                }
+                setError(err.message)
+            } finally {
+                setLoading(false)
+            }
         }
-    }, [API])
+        fetchData()
+        return () => controller.abort();
+    }, [URL])
 
-    return { user, loading, error };
+    return { data, loading, error }
 
 }
 

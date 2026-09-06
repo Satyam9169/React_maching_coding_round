@@ -1,25 +1,33 @@
-import { useState, useEffect } from "react";
 import useFetchData from "./useFetchData";
 
 const DisplayData = () => {
-    const WEB_API = 'https://jsonplaceholder.typicode.com/users';
+    const web_url = 'https://jsonplaceholder.typicode.com/posts'
+    const { data, loading, error } = useFetchData(web_url);
 
-    const { user, loading, error } = useFetchData(WEB_API);
-
-    if (error) return <div>Error Data is not fetching...</div>
-    if (loading) return <div>Loading...</div>
-
-
+    if (loading) return <p>Loading...</p>
+    if (error) return <p>Not Found data</p>
     return (
-        <>
+        <div>
+            <h1>Data Fetching</h1><hr />
             {
-                user.splice(0, 5).map((item, index) => (
-                    <ul key={index}>
-                        <li>{item.name}</li>
+                data.length > 0 ? (
+                    <ul>{
+                        data.map((item) => (
+                            <>
+                                <div key={item.id}>
+                                    <li>Id : {item.id}</li>
+                                    <li>Title: {item.title}</li>
+                                    <li>Body: {item.body}</li>
+                                </div>
+                            </>
+                        ))
+                    }
                     </ul>
-                ))
+                ) : (
+                    <p>data not found</p>
+                )
             }
-        </>
+        </div>
     )
 }
 
