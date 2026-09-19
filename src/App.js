@@ -8,7 +8,9 @@
 // import DigitalClock from './dititalClock/TimeClock'
 // import FilterHighlightText from "./FiltlerData/FilterHighlightText";
 // import AutoCompleteSearch from "./autocompleteSearch/AutoCompleteSearch";
-import TrafficLight from "./trafficLight/TrafficLight";
+// import TrafficLight from "./trafficLight/TrafficLight";
+
+import Counter from "./store/component/Counter";
 
 const App = () => {
   return (
@@ -22,7 +24,9 @@ const App = () => {
       {/* <TodoApp />
       <DigitalClock /> */}
       {/* <FilterHighlightText /> */}
-      <TrafficLight />
+      {/* <TrafficLight /> */}
+      <Counter />
+      
     </div>
   );
 }

@@ -41,9 +41,6 @@ const FilterHighlightText = () => {
             }
         </>
     )
-
-
-
 }
 
 export default FilterHighlightText;
